@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Table(name = "url_mapping")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class UrlMapping {
 
@@ -34,7 +33,6 @@ public class UrlMapping {
     }
 
     public UrlMapping() {
-
     }
 
     public Long getId() {
