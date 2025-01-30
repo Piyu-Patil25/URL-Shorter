@@ -4,31 +4,33 @@ import com.design.urlshortener.service.UrlShortenerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/url")
+@RequestMapping("/api")  // Ensure API prefix is correct
 public class UrlShortenerController {
 
     private final UrlShortenerService urlShortenerService;
 
-    // Constructor-based Injection
     public UrlShortenerController(UrlShortenerService urlShortenerService) {
         this.urlShortenerService = urlShortenerService;
     }
 
-    // Endpoint to shorten a URL
     @PostMapping("/shorten")
-    public ResponseEntity<String> shortenUrl(@RequestParam String originalUrl) {
+    public ResponseEntity<Map<String, String>> shortenUrl(@RequestBody Map<String, String> request) {
+        String originalUrl = request.get("url");
         String shortUrl = urlShortenerService.shortenUrl(originalUrl);
-        return ResponseEntity.ok(shortUrl);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("shortUrl", shortUrl);
+        return ResponseEntity.ok(response);
     }
 
-    // Endpoint to retrieve the original URL
     @GetMapping("/{shortUrl}")
-    public ResponseEntity<String> getOriginalUrl(@PathVariable String shortUrl) {
-        Optional<String> originalUrl = urlShortenerService.getOriginalUrl(shortUrl);
-        return originalUrl.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> getOriginalUrl(@PathVariable String shortUrl) {
+        return urlShortenerService.getOriginalUrl(shortUrl)
+                .map(url -> ResponseEntity.status(302).header("Location", url).build())
+                .orElse(ResponseEntity.notFound().build());
     }
 }

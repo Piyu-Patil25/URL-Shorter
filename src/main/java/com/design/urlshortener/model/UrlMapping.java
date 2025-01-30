@@ -2,11 +2,13 @@ package com.design.urlshortener.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "url_mapping")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UrlMapping {
@@ -24,11 +26,15 @@ public class UrlMapping {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Custom constructor to initialize fields directly
+// Custom constructor to initialize fields directly
     public UrlMapping(String originalUrl, String shortUrl) {
         this.originalUrl = originalUrl;
         this.shortUrl = shortUrl;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public UrlMapping() {
+
     }
 
     public Long getId() {
